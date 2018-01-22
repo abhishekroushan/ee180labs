@@ -8,7 +8,7 @@ Github instructions:
 
 cd <directory_path>
 
-2. Clone the repository: (get the url from the Clone/Fork green button on the page):
+2. Clone the repository: (get the url from the 'Clone or Download' green button on the page):
 
 git clone <url>
 
