@@ -166,6 +166,7 @@ print_loop_cond:
 
 # ADD YOUR CODE HERE! 
 
+
 mergesort:
    #stack pointer operations left
    #push pop for registers contents left
@@ -191,16 +192,18 @@ mergesort:
     move $a0,$s0
     move $a1,$t0
     move $a2,$s2
+    sw   $a1,16($sp)
     jal mergesort
     
-  
+    lw	$t0,16($sp)
     sll $t0,$t0,2   #4*$t0 
     add $a0,$s0,$t0 #array+mid
     srl $t0,$t0,2   #restore mul
     sub $a1,$s1,$t0 #n-mid
     addi $a2,$s2,0
     jal mergesort
-   
+    
+    lw	 $t0,16($sp)
     addi $a0,$s0,0
     addi $a1,$s1,0
     addi $a2,$s2,0
