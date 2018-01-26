@@ -35,7 +35,17 @@ EOL:        .asciiz "\n"
 
 .text
 .globl main
-
+.globl mergesort
+.globl merge
+.globl arrcpy
+.globl program
+.globl check
+.globl lpos_exit
+.globl rpos_exit
+.globl lpos_cond
+.globl while
+.globl exit_mergesort
+.globl temp_bp
 #==========================================================================
 main:
 #==========================================================================
@@ -91,24 +101,28 @@ read_loop_cond:
     #---- Create temp array --------------------------------
     li      $v0, 9              # sbrk
     sll     $s2, $s1, 2         # number of bytes needed
-    move    $a1, $s2            # set up the argument for sbrk
+    move    $a0, $s2            # set up the argument for sbrk
     syscall
     move    $s3, $v0            # the addr of allocated memory #$s3 has temp_array allocated mem address
-    
+
+check:    
     move $a0,$s0		#allocated array address
     move $a1,$s1		#number of elements
     move $a2,$s3		#temp array address
 
    #push regs
-    sw $a0,0($sp)
-    sw $a1,4($sp)
-    sw $a2,8($sp)
+    sw $s0,0($sp)
+    sw $s1,4($sp)
+    sw $s2,8($sp)
+    sw $s3,12($sp)
 
     jal mergesort
-    
-    lw $a0,0($sp)
-    lw $a1,4($sp)
-    lw $a2,8($sp)
+
+temp_bp: 
+    lw $s0,0($sp)
+    lw $s1,4($sp)
+    lw $s2,8($sp)
+    lw $s3,12($sp)
 
 return:
     # You must use a syscall to allocate
@@ -157,29 +171,32 @@ mergesort:
    #push pop for registers contents left
 
    #mergesort args stack store
-    addi $sp,$sp,-16
+    addi $sp,$sp,-32
     sw $ra,0($sp)
     sw $s0,4($sp)
     sw $s1,8($sp)
     sw $s2,12($sp)
 
-   # move $t3,$a0
-   # move $t4,$a1
    #check if n<2
-    addi $t6,$zero,2
+    addi $t6,$zero,2#$t6=2
     slt $t7,$a1,$t6
-    bne $t7,$zero,exit_merge
+    bne $t7,$zero,exit_mergesort
 
     addi $s0,$a0,0
     addi $s1,$a1,0
     addi $s2,$a2,0
     
-    srl $t0,$s1,1 #mid=n/2
-    addi $a1,$t0,0
+    srl $t0,$s1,1 #$t0=mid=n/2
+    #addi $a1,$t0,0
+    move $a0,$s0
+    move $a1,$t0
+    move $a2,$s2
     jal mergesort
     
-   
+  
+    sll $t0,$t0,2   #4*$t0 
     add $a0,$s0,$t0 #array+mid
+    srl $t0,$t0,2   #restore mul
     sub $a1,$s1,$t0 #n-mid
     addi $a2,$s2,0
     jal mergesort
@@ -188,20 +205,21 @@ mergesort:
     addi $a1,$s1,0
     addi $a2,$s2,0
     move $a3,$t0
+program:
     jal merge 
 
-exit_merge: 
+exit_mergesort: 
     lw $ra,0($sp)
     lw $s0,4($sp)
     lw $s1,8($sp)
     lw $s2,12($sp)
-    addi $sp,$sp,16
+    addi $sp,$sp,32
     #$v0 has the result to pass as return value
 
     jr      $ra
 
 merge:
-    addi $sp,$sp,-20
+    addi $sp,$sp,-32
    
     sw $ra,0($sp)
     sw $s0,4($sp)
@@ -209,57 +227,84 @@ merge:
     sw $s2,12($sp)
     sw $s3,16($sp)
 
+    #storing args
     addi $s0,$a0,0  
     addi $s1,$a1,0  
     addi $s2,$a2,0  
     addi $s3,$a3,0  
- 
-    addi $t0,$t0,0 #tpos   
-    addi $t1,$t1,0 #lpos
-    addi $t2,$t2,0 #rpos
 
-    sub $t3,$s1,$s3 #rn
-    add $t4,$s0,$s3 #rarr 
+    #temp args 
+    addi $t0,$zero,0 #$t0=tpos   
+    addi $t1,$zero,0 #$t1=lpos
+    addi $t2,$zero,0 #$t2=rpos
 
+    sub $t3,$s1,$s3 #$t3=rn
+    sll $s3,$s3,2
+    add $t4,$s0,$s3 #$t4=rarr 
+    srl $s3,$s3,2
+
+    slt $t5,$t1,$s3 #lpos<mid
+    slt $t6,$t2,$t3 #rpos<rn
+    and $t7,$t5,$t6 # and
+    beq $t7,$zero,endwhile
 while:
  
     #if else
-    add $t5,$s0,$t1#array[lpos]
-    add $t6,$t4,$t2#raar[rpos]
-    slt $t7,$t5,$t6#if comparision
-    beq $t7,$zero,if_st
+    sll $t1,$t1,2 #for addr mult by 4
+    sll $t2,$t2,2
+    add $t5,$s0,$t1#*array[lpos]
+    add $t6,$t4,$t2#*raar[rpos]
+    srl $t1,$t1,2 #restore mult by 4
+    srl $t2,$t2,2
+    lw $s5,0($t5)
+    lw $s6,0($t6)
+    slt $t7,$s5,$s6#if comparision
+    beq $t7,$zero,else_st
 
 if_st:
-    addi $t5,$t1,1 #lpos++
-    add $t5,$t5,$s0
-    addi $t6,$t0,1#tpos++
-    add $t6,$t6,$s2
+    sll $t1,$t1,2 #for addr mult by 4
+    add $t5,$t1,$s0
+    srl $t1,$t1,2 #restore mult by 4
+    sll $t0,$t0,2	#for addr mul by 4
+    add $t6,$t0,$s2
+    srl $t0,$t0,2 #restore mul by 4
     lw $t7,0($t5)
     sw $t7,0($t6)
+    addi $t1,$t1,1 #lpos++
+    addi $t0,$t0,1#tpos++
     j end_ifelse
 else_st:
-    addi $t5,$t2,1
-    add $t5,$t5,$t4
-    addi $t6,$t0,1
-    add $t6,$t6,$s0
+    sll $t2,$t2,2	#for addr mul by 4
+    add $t5,$t2,$t4
+    srl $t2,$t2,2	#restore mul by 4
+    sll $t0,$t0,2	#for addr mul by 4
+    add $t6,$t0,$s2
+    srl $t0,$t0,2	#restore mul by 4
     lw $t7,0($t5)
     sw $t7,0($t6)
+    addi $t0,$t0,1
+    addi $t2,$t2,1
 
 end_ifelse:
 
     slt $t5,$t1,$s3 #lpos<mid
     slt $t6,$t2,$t3 #rpos<rn
-    and $t7,$t5,$t6 #logical and
+    and $t7,$t5,$t6 # and
     bne $t7,$zero,while
     
+endwhile:
 
     slt $t5,$t1,$s3
     bne $t5,$zero,lpos_cond
     j lpos_exit
 lpos_cond:
-    
-    add $a0,$s2,$t0 #tmp_array+tpos
-    add $a1,$s0,$t1 #array+lpos
+   
+    sll $t0,$t0,2 
+    add $a0,$s2,$t0 #*tmp_array+tpos
+    srl $t0,$t0,2 
+    sll $t1,$t1,2 
+    add $a1,$s0,$t1 #*array+lpos
+    srl $t1,$t1,2 
     sub $a2,$s3,$t1 #mid-lpos
     jal arrcpy
 
@@ -269,9 +314,13 @@ lpos_exit:
     bne $t6,$zero, rpos_cond
     j rpos_exit
 rpos_cond:
-    
+   
+    sll $t0,$t0,2 
     add $a0,$s2,$t0 #tmp_array+tpos
+    srl $t0,$t0,2
+    sll $t2,$t2,2 
     add $a1,$t4,$t2 
+    srl $t2,$t2,2 
     sub $a2,$t3,$t2
     jal arrcpy
 rpos_exit:
@@ -279,6 +328,7 @@ rpos_exit:
     addi $a0,$s0,0
     addi $a1,$s2,0
     addi $a2,$s1,0
+    jal arrcpy
 
 
     lw $ra,0($sp)
@@ -286,26 +336,43 @@ rpos_exit:
     lw $s1,8($sp)
     lw $s2,12($sp)
     lw $s3,16($sp)
-    addi $sp,$sp,20
+    addi $sp,$sp,32
     jr      $ra               
 
 arrcpy:
 
-    addi $sp,$sp,-12
+    addi $sp,$sp,-32
     sw $ra,0($sp) 
-    
-    addi $t0,$t0,0	#i=0
+    sw $s0,4($sp)
+    sw $s1,8($sp)
+    sw $s2,12($sp)
+    sw $s3,16($sp)
+   
+    addi $s0,$a0,0   
+    addi $s1,$a1,0   
+    addi $s2,$a2,0   
+ 
+    addi $s3,$zero,0	#i=0
+    slt $t5,$s3,$s2
+    beq $t5,$zero,end_jump
 jump:
-    add $t2,$a1,$t0
-    lw $t3,0($t2)
-    add $t2,$a0,$t0
-    sw $t3,0($t2)    
+    sll $s3,$s3,2 	#for addr mul by 4
+    add $t6,$s1,$s3
+    lw $t7,0($t6)
+    add $t6,$s0,$s3
+    srl $s3,$s3,2	#restore mul by 4
+    sw $t7,0($t6)    
 
-    addi $t0,$t0,1
-    slt $t1,$t0,$a2
-    bne $t1,$zero,jump
+    addi $s3,$s3,1
+    slt $t5,$s3,$s2
+    bne $t5,$zero,jump
     
+end_jump:
     lw $ra,0($sp) 
-    addi $sp,$sp,12 
+    lw $s0,4($sp)
+    lw $s1,8($sp)
+    lw $s2,12($sp)
+    lw $s3,16($sp)
+    addi $sp,$sp,32 
    
     jr      $ra
