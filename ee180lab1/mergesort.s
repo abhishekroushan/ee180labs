@@ -35,17 +35,6 @@ EOL:        .asciiz "\n"
 
 .text
 .globl main
-.globl mergesort
-.globl merge
-.globl arrcpy
-.globl program
-.globl check
-.globl lpos_exit
-.globl rpos_exit
-.globl lpos_cond
-.globl while
-.globl exit_mergesort
-.globl temp_bp
 #==========================================================================
 main:
 #==========================================================================
@@ -168,8 +157,6 @@ print_loop_cond:
 
 
 mergesort:
-   #stack pointer operations left
-   #push pop for registers contents left
 
    #mergesort args stack store
     addi $sp,$sp,-32
@@ -178,8 +165,8 @@ mergesort:
     sw $s1,8($sp)
     sw $s2,12($sp)
 
-   #check if n<2
-    addi $t6,$zero,2#$t6=2
+    #check if n<2
+    addi $t6,$zero,2  #$t6=2
     slt $t7,$a1,$t6
     bne $t7,$zero,exit_mergesort
 
@@ -187,8 +174,7 @@ mergesort:
     addi $s1,$a1,0
     addi $s2,$a2,0
     
-    srl $t0,$s1,1 #$t0=mid=n/2
-    #addi $a1,$t0,0
+    srl $t0,$s1,1     #$t0=mid=n/2
     move $a0,$s0
     move $a1,$t0
     move $a2,$s2
@@ -208,6 +194,7 @@ mergesort:
     addi $a1,$s1,0
     addi $a2,$s2,0
     move $a3,$t0
+
 program:
     jal merge 
 
@@ -217,7 +204,6 @@ exit_mergesort:
     lw $s1,8($sp)
     lw $s2,12($sp)
     addi $sp,$sp,32
-    #$v0 has the result to pass as return value
 
     jr      $ra
 
@@ -250,39 +236,41 @@ merge:
     slt $t6,$t2,$t3 #rpos<rn
     and $t7,$t5,$t6 # and
     beq $t7,$zero,endwhile
+
 while:
  
     #if else
-    sll $t1,$t1,2 #for addr mult by 4
+    sll $t1,$t1,2   #for addr mult by 4
     sll $t2,$t2,2
-    add $t5,$s0,$t1#*array[lpos]
-    add $t6,$t4,$t2#*raar[rpos]
-    srl $t1,$t1,2 #restore mult by 4
+    add $t5,$s0,$t1 #*array[lpos]
+    add $t6,$t4,$t2 #*raar[rpos]
+    srl $t1,$t1,2   #restore mult by 4
     srl $t2,$t2,2
     lw $s5,0($t5)
     lw $s6,0($t6)
-    slt $t7,$s5,$s6#if comparision
+    slt $t7,$s5,$s6 #if comparision
     beq $t7,$zero,else_st
 
 if_st:
-    sll $t1,$t1,2 #for addr mult by 4
+    sll $t1,$t1,2     #for addr mult by 4
     add $t5,$t1,$s0
-    srl $t1,$t1,2 #restore mult by 4
-    sll $t0,$t0,2	#for addr mul by 4
+    srl $t1,$t1,2     #restore mult by 4
+    sll $t0,$t0,2     #for addr mul by 4
     add $t6,$t0,$s2
-    srl $t0,$t0,2 #restore mul by 4
+    srl $t0,$t0,2     #restore mul by 4
     lw $t7,0($t5)
     sw $t7,0($t6)
-    addi $t1,$t1,1 #lpos++
-    addi $t0,$t0,1#tpos++
+    addi $t1,$t1,1    #lpos++
+    addi $t0,$t0,1    #tpos++
     j end_ifelse
+
 else_st:
-    sll $t2,$t2,2	#for addr mul by 4
+    sll $t2,$t2,2     #for addr mul by 4
     add $t5,$t2,$t4
-    srl $t2,$t2,2	#restore mul by 4
-    sll $t0,$t0,2	#for addr mul by 4
+    srl $t2,$t2,2     #restore mul by 4
+    sll $t0,$t0,2     #for addr mul by 4
     add $t6,$t0,$s2
-    srl $t0,$t0,2	#restore mul by 4
+    srl $t0,$t0,2     #restore mul by 4
     lw $t7,0($t5)
     sw $t7,0($t6)
     addi $t0,$t0,1
@@ -290,9 +278,9 @@ else_st:
 
 end_ifelse:
 
-    slt $t5,$t1,$s3 #lpos<mid
-    slt $t6,$t2,$t3 #rpos<rn
-    and $t7,$t5,$t6 # and
+    slt $t5,$t1,$s3   #lpos<mid
+    slt $t6,$t2,$t3   #rpos<rn
+    and $t7,$t5,$t6   # and
     bne $t7,$zero,while
     
 endwhile:
@@ -300,6 +288,7 @@ endwhile:
     slt $t5,$t1,$s3
     bne $t5,$zero,lpos_cond
     j lpos_exit
+
 lpos_cond:
    
     sll $t0,$t0,2 
@@ -316,6 +305,7 @@ lpos_exit:
     slt $t6,$t2,$t3
     bne $t6,$zero, rpos_cond
     j rpos_exit
+
 rpos_cond:
    
     sll $t0,$t0,2 
@@ -326,13 +316,13 @@ rpos_cond:
     srl $t2,$t2,2 
     sub $a2,$t3,$t2
     jal arrcpy
+
 rpos_exit:
  
     addi $a0,$s0,0
     addi $a1,$s2,0
     addi $a2,$s1,0
     jal arrcpy
-
 
     lw $ra,0($sp)
     lw $s0,4($sp)
@@ -358,7 +348,9 @@ arrcpy:
     addi $s3,$zero,0	#i=0
     slt $t5,$s3,$s2
     beq $t5,$zero,end_jump
+
 jump:
+
     sll $s3,$s3,2 	#for addr mul by 4
     add $t6,$s1,$s3
     lw $t7,0($t6)
@@ -371,6 +363,7 @@ jump:
     bne $t5,$zero,jump
     
 end_jump:
+
     lw $ra,0($sp) 
     lw $s0,4($sp)
     lw $s1,8($sp)
