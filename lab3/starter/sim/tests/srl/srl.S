@@ -20,7 +20,6 @@ boot:
     ori     $s1, $0, 1          # Prepare the 'done' status
     lui     $t0, 0xdeaf         # A = 0xdeafbeef
     nop #added
-    nop #added
     ori     $t0, $t0, 0xbeef
     nop #added
     nop #added
@@ -35,7 +34,6 @@ boot:
     nop #added
     nop #added
     sltiu   $v0, $t3, 1
-    nop #added
     nop #added
     nop #added
     sw      $v0, 4($s0)         # Set the test result

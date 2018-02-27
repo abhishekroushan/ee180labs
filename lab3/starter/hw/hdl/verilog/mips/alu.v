@@ -37,6 +37,7 @@ module alu (
             `ALU_SUBU:  alu_result = alu_op_x - alu_op_y;
 	    //NOTE: mul added
             `ALU_MUL:  	alu_result = alu_op_x*alu_op_y;
+	    `ALU_XOR:   alu_result = alu_op_x^alu_op_y;
             `ALU_SLTU:  alu_result = alu_op_x < alu_op_y;
             `ALU_SLT:   alu_result = alu_op_x_signed < alu_op_y_signed;
             `ALU_SRL:   alu_result = alu_op_y >> alu_op_x[4:0]; // shift operations are Y >> X

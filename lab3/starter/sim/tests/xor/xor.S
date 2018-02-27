@@ -34,7 +34,6 @@ boot:
     nop #added
     nop #added
     xor     $t4, $t2, $t3       # E = xor(C,D) = 0x1
-
     nop #added
     nop #added
     sw      $t4, 4($s0)         # Set the test result

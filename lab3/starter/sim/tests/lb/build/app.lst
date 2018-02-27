@@ -25,17 +25,18 @@ Disassembly of section .text:
       44:	35adffef 	ori	t5,t5,0xffef
       48:	01521823 	subu	v1,t2,s2
       4c:	2c620001 	sltiu	v0,v1,1
-      50:	01731823 	subu	v1,t3,s3
-      54:	2c630001 	sltiu	v1,v1,1
-      58:	00431024 	and	v0,v0,v1
-      5c:	01941823 	subu	v1,t4,s4
-      60:	2c630001 	sltiu	v1,v1,1
-      64:	00431024 	and	v0,v0,v1
-      68:	01b51823 	subu	v1,t5,s5
-      6c:	2c630001 	sltiu	v1,v1,1
-      70:	00431024 	and	v0,v0,v1
-      74:	ae020004 	sw	v0,4(s0)
-      78:	ae110000 	sw	s1,0(s0)
-      7c:	0800001f 	j	7c <boot+0x7c>
-      80:	00000000 	nop
+      50:	00000000 	nop
+      54:	01731823 	subu	v1,t3,s3
+      58:	2c630001 	sltiu	v1,v1,1
+      5c:	00431024 	and	v0,v0,v1
+      60:	01941823 	subu	v1,t4,s4
+      64:	2c630001 	sltiu	v1,v1,1
+      68:	00431024 	and	v0,v0,v1
+      6c:	01b51823 	subu	v1,t5,s5
+      70:	2c630001 	sltiu	v1,v1,1
+      74:	00431024 	and	v0,v0,v1
+      78:	ae020004 	sw	v0,4(s0)
+      7c:	ae110000 	sw	s1,0(s0)
+      80:	08000020 	j	80 <boot+0x80>
+      84:	00000000 	nop
 	...
