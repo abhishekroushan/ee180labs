@@ -24,11 +24,12 @@ boot:
     nop     #added
     nop     #added
     beq     $t0, $t1, $target
-    nop      #added
     ori     $v0, $0, 0          # The test result starts as a failure
     nop     #added
     nop     #added
 $finish:
+    nop     #added
+    nop     #added
     sw      $v0, 4($s0)
     sw      $s1, 0($s0)
 

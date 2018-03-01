@@ -1,16 +1,20 @@
 [*]
-[*] GTKWave Analyzer v3.3.58 (w)1999-2014 BSI
-[*] Fri Jan  9 20:37:52 2015
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Thu Mar  1 04:49:16 2018
 [*]
+[dumpfile] "/home/ketan94/ee180labs/lab3/starter/sim/tests/bgez/streamwave.vcd"
+[dumpfile_mtime] "Thu Mar  1 04:30:54 2018"
+[dumpfile_size] 32763
+[savefile] "/home/ketan94/ee180labs/lab3/starter/sim/harness/waveformat.gtkw"
 [timestart] 0
-[size] 1535 876
-[pos] 1089 370
-*-15.000000 0 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 1440 791
+[pos] 0 1
+*-15.000000 75200 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] userlogic_test.
 [treeopen] userlogic_test.ul.
 [treeopen] userlogic_test.ul.cpu.
-[sst_width] 223
-[signals_width] 210
+[sst_width] 323
+[signals_width] 260
 [sst_expanded] 1
 [sst_vpaned_height] 287
 @200
@@ -21,7 +25,6 @@ userlogic_test.rst_n
 @200
 -Input Buffer
 @22
-userlogic_test.input_buffer.addr[13:0]
 userlogic_test.input_buffer.din[31:0]
 userlogic_test.input_buffer.dout[31:0]
 @28
@@ -29,15 +32,43 @@ userlogic_test.input_buffer.we
 @200
 -Output Buffer
 @22
-userlogic_test.output_buffer.addr[13:0]
 userlogic_test.output_buffer.din[31:0]
 userlogic_test.output_buffer.dout[31:0]
-@28
-userlogic_test.output_buffer.we
 @200
 -MIPS
 @22
 userlogic_test.ul.cpu.pc[31:0]
 userlogic_test.ul.cpu.instr[31:0]
+userlogic_test.ul.cpu.d_stage.alu_op_x[31:0]
+userlogic_test.ul.cpu.d_stage.alu_op_y[31:0]
+userlogic_test.ul.cpu.d_stage.alu_result_ex[31:0]
+@28
+userlogic_test.ul.cpu.d_stage.isBEQ
+@22
+userlogic_test.ul.cpu.if_stage.br_target[31:0]
+userlogic_test.ul.cpu.if_stage.pc_next[31:0]
+@28
+userlogic_test.ul.cpu.if_stage.jump_branch
+@22
+userlogic_test.ul.cpu.d_stage.alu_opcode[3:0]
+@28
+userlogic_test.ul.cpu.d_stage.use_imm
+userlogic_test.ul.cpu.d_stage.isJ
+@22
+userlogic_test.ul.cpu.if_stage.pc_id[31:0]
+userlogic_test.ul.cpu.if_stage.j_addr[31:0]
+@28
+userlogic_test.ul.cpu.d_stage.isEqual
+@22
+userlogic_test.ul.cpu.w_stage.reg_write_data[31:0]
+userlogic_test.ul.cpu.w_stage.rt_data[31:0]
+userlogic_test.ul.cpu.w_stage.rs_data[31:0]
+userlogic_test.ul.cpu.d_stage.rt_data_in[31:0]
+@28
+userlogic_test.ul.cpu.d_stage.isBGTZ
+@22
+userlogic_test.ul.cpu.d_stage.op[5:0]
+@23
+userlogic_test.ul.cpu.d_stage.rt_addr[4:0]
 [pattern_trace] 1
 [pattern_trace] 0

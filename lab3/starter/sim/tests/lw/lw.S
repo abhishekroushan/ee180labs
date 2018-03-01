@@ -39,7 +39,7 @@ boot:
     nop
     nop
     sw      $t2, 4($s0)         # Set the test result
-    sw      $s1, 0($s0)         # Set 'done'
+    sw 	    $s1, 0($s0)         # Set 'done'
 
 $done:
     j       $done
