@@ -1,6 +1,6 @@
 j 1
 lbu 1
-fwd_idrs_ex X
+fwd_idrs_ex 65535
 sll 1
 beq 1
 jr 1
@@ -21,7 +21,7 @@ addu 1
 addiu 1
 sra 1
 srl 1
-fwd_idrt_mem X
+fwd_idrt_mem 65535
 bgez 1
 movn 1
 bltz 1

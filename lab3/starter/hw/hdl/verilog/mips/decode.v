@@ -82,7 +82,7 @@ module decode (
 
     wire isJ    = (op == `J);
     wire isJR    = (funct == `JR) && (op == `SPECIAL);
-    wire isLA    = (funct == `6'b000100) && (op ==`ADDIU);
+    wire isLA    = (funct == 6'b000100) && (op ==`ADDIU);
 
 //******************************************************************************
 // shift instruction decode
@@ -177,12 +177,22 @@ module decode (
 // forwarding and stalling logic
 //******************************************************************************
 
-    wire forward_rs_mem = &{rs_addr == reg_write_addr_mem, rs_addr != `ZERO, reg_we_mem};
+    wire forward_rs_ex = &{rs_addr== reg_write_addr_ex,~mem_read_ex, rs_addr!=`ZERO, reg_we_ex};
+    wire forward_rt_ex = &{rt_addr== reg_write_addr_ex,~mem_read_ex, rt_addr!=`ZERO, reg_we_ex};
+    wire forward_rs_mem = &{rs_addr== reg_write_addr_mem, rs_addr !=`ZERO,reg_we_mem};
+    wire forward_rt_mem = &{rt_addr== reg_write_addr_mem, rt_addr !=`ZERO,reg_we_mem};
+    //assign rs_data= forward_rs_mem ? reg_write_data_mem:((forward_rs_ex)? alu_result_ex:rs_data_in);
+    //assign rt_data= forward_rs_mem ? reg_write_data_mem:((forward_rt_ex)? alu_result_ex:rt_data_in);
+    assign rs_data= forward_rs_ex? alu_result_ex: ((forward_rs_mem)? reg_write_data_mem:rs_data_in);
+    assign rt_data= forward_rt_ex? alu_result_ex: ((forward_rt_mem)? reg_write_data_mem:rt_data_in);
+ 
+    //wire forward_rs_mem = &{rs_addr == reg_write_addr_mem, rs_addr != `ZERO, reg_we_mem};
 
-    assign rs_data = forward_rs_mem ? reg_write_data_mem : (isLA ? 32'b0 : rs_data_in);
-    assign rt_data = rt_data_in;
+    //assign rs_data = forward_rs_mem ? reg_write_data_mem : (isLA ? 32'b0 : rs_data_in);
+    //assign rt_data = rt_data_in;
 
     wire rs_mem_dependency = &{rs_addr == reg_write_addr_ex, mem_read_ex, rs_addr != `ZERO};
+    wire rt_mem_dependency = &{rt_addr == reg_write_addr_ex, mem_read_ex, rt_addr != `ZERO};
 
     wire isLUI = op == `LUI;
     wire read_from_rs = ~|{isLUI, jump_target, isShiftImm};
@@ -190,7 +200,7 @@ module decode (
     wire isALUImm = |{op == `ADDI, op == `ADDIU, op == `SLTI, op == `SLTIU, op == `ANDI, op == `ORI};
     wire read_from_rt = ~|{isLUI, jump_target, isALUImm, mem_read};
 
-    assign stall = rs_mem_dependency & read_from_rs;
+    assign stall = (rs_mem_dependency & read_from_rs) | (rt_mem_dependency & read_from_rt) ;
 
     assign jr_pc = rs_data;
     assign mem_write_data = rt_data;

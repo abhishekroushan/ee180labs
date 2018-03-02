@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 #
 # If you are running this from your own computer, change the above
 # line to '#!/bin/python'
