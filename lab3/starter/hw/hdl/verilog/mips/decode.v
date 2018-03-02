@@ -81,7 +81,8 @@ module decode (
 //******************************************************************************
 
     wire isJ    = (op == `J);
-    wire isJR    = (funct == `JR);
+    wire isJR    = (funct == `JR) && (op == `SPECIAL);
+    wire isLA    = (funct == `6'b000100) && (op ==`ADDIU);
 
 //******************************************************************************
 // shift instruction decode
@@ -178,7 +179,7 @@ module decode (
 
     wire forward_rs_mem = &{rs_addr == reg_write_addr_mem, rs_addr != `ZERO, reg_we_mem};
 
-    assign rs_data = forward_rs_mem ? reg_write_data_mem : rs_data_in;
+    assign rs_data = forward_rs_mem ? reg_write_data_mem : (isLA ? 32'b0 : rs_data_in);
     assign rt_data = rt_data_in;
 
     wire rs_mem_dependency = &{rs_addr == reg_write_addr_ex, mem_read_ex, rs_addr != `ZERO};
@@ -255,7 +256,7 @@ module decode (
                            isBNE & ~isEqual};
 
     //assign jump_target = |{isJ,isJR};
-    assign jump_target = isJ;
+    assign jump_target = isJ || isJR;
     assign jump_reg = isJR;
 
 endmodule

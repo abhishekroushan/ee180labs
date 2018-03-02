@@ -24,6 +24,7 @@ module mips_cpu (
     wire jump_branch_id, jump_target_id, jump_reg_id;
     wire [4:0] rs_addr_id, rt_addr_id;
     wire [31:0] rs_data_id, rt_data_id;
+    wire [31:0] rs_data_id_fetch;
     wire [31:0] mem_write_data_id, mem_write_data_ex;
     wire [31:0] jr_pc_id;
     wire [4:0] reg_write_addr_id, reg_write_addr_ex, reg_write_addr_mem, reg_write_addr_wb;
@@ -71,6 +72,8 @@ module mips_cpu (
     // Saved ID instruction after a stall
     dffare #(32) instr_sav_dff (.clk(clk), .r(rst), .en(en), .d(instr), .q(instr_sav));
     dffare #(1) stall_f_dff (.clk(clk), .r(rst), .en(en), .d(stall), .q(stall_r));
+    //ff for rs_data for jr to Fetch
+    dffare #(32) rs_data_id_to_fetch (.clk(clk), .r(rst), .en(en), .d(rs_data_id), .q(rs_data_id_fetch));
     assign instr_id = (stall_r) ? instr_sav : instr;
 
     wire [29:0] instr_number_id = pc_id[31:2]; // useful for viewing waveforms

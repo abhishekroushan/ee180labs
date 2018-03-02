@@ -22,6 +22,7 @@ boot:
     la      $t0, $target
     nop #added
     nop #added
+    nop #added
     jr      $t0
     ori     $v0, $0, 0          # The test result starts as a failure
     nop #added
