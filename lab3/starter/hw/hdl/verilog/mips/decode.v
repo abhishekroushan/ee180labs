@@ -113,6 +113,7 @@ module decode (
             {`SLTIU, `DC6}:     alu_opcode = `ALU_SLTU;
             {`ANDI, `DC6}:      alu_opcode = `ALU_AND;
             {`ORI, `DC6}:       alu_opcode = `ALU_OR;
+            {`XORI, `DC6}:       alu_opcode = `ALU_XOR;
             {`LB, `DC6}:        alu_opcode = `ALU_ADD;
             {`LW, `DC6}:        alu_opcode = `ALU_ADD;
             {`LBU, `DC6}:       alu_opcode = `ALU_ADD;
@@ -128,6 +129,7 @@ module decode (
 	    {`SPECIAL, `XOR}:   alu_opcode = `ALU_XOR;
             {`SPECIAL, `AND}:   alu_opcode = `ALU_AND;
             {`SPECIAL, `OR}:    alu_opcode = `ALU_OR;
+            {`SPECIAL, `NOR}:    alu_opcode = `ALU_NOR;
             {`SPECIAL, `MOVN}:  alu_opcode = `ALU_PASSX;
             {`SPECIAL, `MOVZ}:  alu_opcode = `ALU_PASSX;
             {`SPECIAL, `SLT}:   alu_opcode = `ALU_SLT;
@@ -171,7 +173,7 @@ module decode (
 
     //wire [31:0] imm = (op == `LUI) ? imm_upper : imm_sign_extend;
     	
-    wire [31:0] imm = (op == `LUI) ? imm_upper : ((use_imm && (op == `ANDI || op == `ORI)) ? imm_zero_extend : imm_sign_extend);
+    wire [31:0] imm = (op == `LUI) ? imm_upper : ((use_imm && (op == `ANDI || op == `ORI || op ==`XORI)) ? imm_zero_extend : imm_sign_extend);
 
 //******************************************************************************
 // forwarding and stalling logic
@@ -262,6 +264,7 @@ module decode (
     assign jump_branch = |{isBEQ & isEqual,
 			   isBGEZNL & isGeZ,
 			   isBLEZ & isLeZ,
+			   isBGTZ & ~isLeZ,
 			   isBLTZNL & isLZ,
                            isBNE & ~isEqual};
 

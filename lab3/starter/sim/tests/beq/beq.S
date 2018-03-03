@@ -21,15 +21,15 @@ boot:
     ori     $s1, $0, 1          # Prepare the 'done' status
     ori     $t0, $0, 0xffff
     ori     $t1, $0, 0xffff
-    nop     #added
-    nop     #added
+   # nop     #added
+   # nop     #added
     beq     $t0, $t1, $target
     ori     $v0, $0, 0          # The test result starts as a failure
-    nop     #added
-    nop     #added
+   # nop     #added
+   # nop     #added
 $finish:
-    nop     #added
-    nop     #added
+   # nop     #added
+   # nop     #added
     sw      $v0, 4($s0)
     sw      $s1, 0($s0)
 

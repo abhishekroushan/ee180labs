@@ -32,12 +32,13 @@ boot:
     nop
     nop
     lw      $t3, 0($t0)
+    nop #added
     xor     $t4, $t3, $t2
     nop
     nop
     nop
     nop
-    nop
+   nop
     sw      $t4, 4($s0)         # Set the test result
     sw      $s1, 0($s0)         # Set 'done'
 
