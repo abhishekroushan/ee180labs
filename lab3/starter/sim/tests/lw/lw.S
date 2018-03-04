@@ -35,7 +35,7 @@ boot:
    # nop
    # nop
     lw      $t2, 0($t0)
-    nop
+   # nop
    # nop
    # nop
     sw      $t2, 4($s0)         # Set the test result

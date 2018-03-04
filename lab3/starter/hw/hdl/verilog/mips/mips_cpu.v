@@ -75,6 +75,7 @@ module mips_cpu (
     dffare #(1) stall_f_dff (.clk(clk), .r(rst), .en(en), .d(stall), .q(stall_r));
     //ff for rs_data for jr to Fetch
     dffare #(32) rs_data_id_to_fetch (.clk(clk), .r(rst), .en(en), .d(rs_data_id), .q(rs_data_id_fetch));
+    dffare  rst_id_ex (.clk(clk), .r(rst), .en(en), .d(rst_id), .q(rst_ex));
     assign instr_id = (stall_r) ? instr_sav : instr;
 
     wire [29:0] instr_number_id = pc_id[31:2]; // useful for viewing waveforms
@@ -145,7 +146,7 @@ module mips_cpu (
     dffarre mem_read_id2ex (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(1'b0), .q());
     dffarre mem_byte_id2ex (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(mem_byte_id), .q(mem_byte_ex));
     dffarre mem_signextend_id2ex (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(mem_signextend_id), .q(mem_signextend_ex));
-    dffarre       lw_mem_read_mem (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(mem_read_ex), .q(mem_read_mem));
+    dffarre       lw_mem_read_mem (.clk(clk), .ar(rst), .r(rst_ex), .en(en), .d(mem_read_ex), .q(mem_read_mem));
 
     // needed for W stage
     dffarre #(5) reg_write_addr_id2ex (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(reg_write_addr_id), .q(reg_write_addr_ex));
