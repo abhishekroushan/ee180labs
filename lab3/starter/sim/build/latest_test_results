@@ -3,7 +3,7 @@ lbu 1
 fwd_idrs_ex 1
 sll 1
 beq 1
-jr 0
+jr 1
 mul 1
 sltiu 1
 blez 1
@@ -23,7 +23,7 @@ addu 1
 addiu 1
 sra 1
 srl 1
-movz 0
+movz 1
 sllv 1
 or 1
 addi 1

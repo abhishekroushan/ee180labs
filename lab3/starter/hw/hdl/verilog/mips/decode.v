@@ -34,6 +34,9 @@ module decode (
     input  atomic_ex,
     output wire mem_sc_mask_id,
     output wire mem_sc_id,
+    //jr forwarding rs
+    output wire [31:0] rs_data, 
+    output wire [31:0] rt_data,
 
     output wire stall,
 
@@ -45,6 +48,7 @@ module decode (
     input reg_we_mem,
     input [4:0] reg_write_addr_mem,
     input [31:0] reg_write_data_mem
+
 );
 
 //******************************************************************************
@@ -59,7 +63,7 @@ module decode (
     wire [5:0] funct = instr[5:0];
     wire [15:0] immediate = instr[15:0];
 
-    wire [31:0] rs_data, rt_data;
+    //wire [31:0] rs_data, rt_data;
 
 //******************************************************************************
 // branch instructions decode

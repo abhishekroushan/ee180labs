@@ -12,7 +12,7 @@ Disassembly of section .text:
       10:	3508beef 	ori	t0,t0,0xbeef
       14:	34090000 	li	t1,0x0
       18:	0111500a 	movz	t2,t0,s1
-      1c:	0100480a 	movz	t1,t0,zero
+      1c:	0000480a 	movz	t1,zero,zero
       20:	01485823 	subu	t3,t2,t0
       24:	00000000 	nop
       28:	2d620001 	sltiu	v0,t3,1

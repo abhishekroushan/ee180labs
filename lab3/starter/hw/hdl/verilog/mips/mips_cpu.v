@@ -24,6 +24,7 @@ module mips_cpu (
     wire jump_branch_id, jump_target_id, jump_reg_id;
     wire [4:0] rs_addr_id, rt_addr_id;
     wire [31:0] rs_data_id, rt_data_id;
+    wire [31:0] rs_data, rt_data;
     wire [31:0] rs_data_id_fetch;
     wire [31:0] mem_write_data_id, mem_write_data_ex;
     wire [31:0] jr_pc_id;
@@ -57,7 +58,7 @@ module mips_cpu (
         .jump_target    (jump_target_id),
         .jump_reg   	(jump_reg_id),
         //jump reg target
-	.rs_data_in    	(rs_data_id),
+	      .rs_data_in    	(rs_data),
         .jump_branch    (jump_branch_id),
         .pc_id          (pc_id),
         .instr_id       (instr_id[25:0]),
@@ -110,6 +111,8 @@ module mips_cpu (
         .mem_sc_id          (mem_sc_id),
         .stall              (stall),
 
+        .rs_data            (rs_data),
+        .rt_data            (rt_data),
         // inputs for forwarding/stalling from X
         .reg_we_ex          (reg_we_ex),
         .reg_write_addr_ex  (reg_write_addr_ex),
