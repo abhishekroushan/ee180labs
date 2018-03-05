@@ -46,6 +46,7 @@ module mips_cpu (
     wire [31:0] mem_read_data_byte_extend;
     wire mem_atomic_id, mem_atomic_ex, mem_atomic_en, mem_sc_mask_id;
     wire mem_sc_id, mem_sc_ex;
+    wire mem_ll_id, mem_ll_ex;
     wire alu_overflow;
     wire stall, stall_r;
     wire en_if = ~stall & en;
@@ -110,6 +111,8 @@ module mips_cpu (
         .atomic_ex          (mem_atomic_ex),
         .mem_sc_mask_id     (mem_sc_mask_id),
         .mem_sc_id          (mem_sc_id),
+        .mem_ll_id          (mem_ll_id),
+        .mem_ll_ex          (mem_ll_ex),
         .stall              (stall),
 
         .rs_data            (rs_data),
@@ -130,6 +133,7 @@ module mips_cpu (
     wire atomic_en = en & mem_read_id;
     dffarre       atomic  (.clk(clk), .ar(rst), .r(rst_id), .en(atomic_en), .d(mem_atomic_id), .q(mem_atomic_ex));
     dffarre       sc      (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(mem_sc_id), .q(mem_sc_ex));
+    dffarre       ll      (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(mem_ll_id), .q(mem_ll_ex));
 
     // needed for X stage
     dffarre #(32) alu_op_x_id2ex (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(alu_op_x_id), .q(alu_op_x_ex));
@@ -166,7 +170,7 @@ module mips_cpu (
 
     // needed for M stage
     wire [31:0] sc_result = {{31{1'b0}},(mem_sc_ex & mem_we_ex)};
-    wire [31:0] alu_sc_result_ex = alu_result_ex;   // TODO: Need to conditionally inject SC value
+    wire [31:0] alu_sc_result_ex = (~(mem_sc_ex & mem_we_ex))?alu_result_ex:sc_result;   // TODO: Need to conditionally inject SC value
     dffare #(32) alu_result_ex2mem (.clk(clk), .r(rst), .en(en), .d(alu_sc_result_ex), .q(alu_result_mem));
     dffare mem_read_ex2mem (.clk(clk), .r(rst), .en(en), .d(1'b0), .q());
     dffare mem_byte_ex2mem (.clk(clk), .r(rst), .en(en), .d(mem_byte_ex), .q(mem_byte_mem));

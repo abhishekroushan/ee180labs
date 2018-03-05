@@ -34,6 +34,8 @@ module decode (
     input  atomic_ex,
     output wire mem_sc_mask_id,
     output wire mem_sc_id,
+    output wire mem_ll_id,
+    input wire mem_ll_ex,
     //jr forwarding rs
     output wire [31:0] rs_data, 
     output wire [31:0] rt_data,
@@ -87,6 +89,8 @@ module decode (
     wire isJ    = (op == `J);
     wire isJR    = (funct == `JR) && (op == `SPECIAL);
     wire isLA    = (funct == 6'b000100) && (op ==`ADDIU);
+    wire isJAL   = (op==`JAL);
+    wire isJALR   = (funct==`JALR) && (op==`SPECIAL);
 
 //******************************************************************************
 // shift instruction decode
@@ -168,6 +172,7 @@ module decode (
 //******************************************************************************
 
     wire use_imm = &{op != `SPECIAL, op != `SPECIAL2, op != `BNE, op != `BEQ}; // where to get 2nd ALU operand from: 0 for RtData, 1 for Immediate
+    //wire use_imm = &{op != `SPECIAL, op != `SPECIAL2, op != `BNE, op != `BEQ, op !=`JAL}; // where to get 2nd ALU operand from: 0 for RtData, 1 for Immediate
 
     wire [31:0] imm_sign_extend = {{16{immediate[15]}}, immediate};
     //imm_sign_extend = {{16{immediate[15]}}, immediate};
@@ -225,8 +230,10 @@ module decode (
     // for immediate operations, use Imm
     // otherwise use rt
 
-    assign alu_op_y = (use_imm) ? imm : rt_data;
-    assign reg_write_addr = (use_imm) ? rt_addr : rd_addr;
+    wire [31:0] pc_id_p8 = pc + 4'h8;
+    //assign alu_op_y = (use_imm) ? imm : rt_data;
+    assign alu_op_y =(isJAL || isJALR)? pc_id_p8:((use_imm) ? imm : rt_data);
+    assign reg_write_addr =(isJAL|| isJALR)?(5'h1f):((use_imm) ? rt_addr : rd_addr);
 
     // determine when to write back to a register (any operation that isn't an
     // unconditional store, non-linking branch, or non-linking jump)
@@ -249,9 +256,11 @@ module decode (
 // Load linked / Store conditional
 //******************************************************************************
     assign mem_sc_id = (op == `SC);
+    assign mem_ll_id = (op == `LL);
 
     // 'atomic_id' is high when a load-linked has not been followed by a store.
-    assign atomic_id = 1'b0;
+    //assign atomic_id = 1'b0;
+    assign atomic_id = (~mem_sc_id)&(mem_ll_ex);
 
     // 'mem_sc_mask_id' is high when a store conditional should not store
     assign mem_sc_mask_id = 1'b0;
@@ -273,7 +282,7 @@ module decode (
                            isBNE & ~isEqual};
 
     //assign jump_target = |{isJ,isJR};
-    assign jump_target = isJ || isJR;
-    assign jump_reg = isJR;
+    assign jump_target = isJ || isJR ||isJAL || isJALR;
+    assign jump_reg = isJR || isJALR;
 
 endmodule
