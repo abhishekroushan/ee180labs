@@ -1,1 +1,35 @@
 TODO: Write your lab report here. See the handout for more information.
+
+LAB REPORT:
+1. Partner and Group Names:
+    Abhishek Roushan                Group 15
+    Ketan Pant                      Group 15
+
+2. Instructions Implemented:
+    We implemented all the base case instructions listed in the lab handout.
+
+3. Changes to datapath to obviate hazards:
+
+    i. Data hazard: For the case of RAW data hazards, we implemented a forwarding 
+                    logic to detect Mem-ID and EX-ID dependecies and forward the 
+                    appropriate data to the ID/EX pipeline.
+    ii. Load Use hazard: For the case of load use hazard, we implemented the stalling
+                         logic to detect the MEM-ID dependency and stall the pipeline 
+                         for 1 idle cycle.
+    iii. Control Hazards: For the branch instructions, we have a 1 branch delay slot,
+                          which essentially means that the instruction after Branch is 
+                          always implemented. A 32 bit comparator is added in the Decode 
+                          stage to predict branch condition early.
+
+    Change to the control logic to obviate hazards:
+    
+    i. The data hazards are detected in the decode stage itself. The additional contol signals
+        ForwardA, ForwardB are generated in the stage. 
+    ii. The Branch condition results are calculated in the decode stage, generating the contol signals
+        isBranch for all the different types of branch instructions (beq,bne,bgt, etc), which then passed 
+        to Fetch stage to go the the correct next program counter (pc+4,branch target etc)
+
+4. Baseline Sobel is implemented on the sobel filter
+    lab3-p app.hex -f baxter.avi
+    Here the app.hex was generated after making the sobel_asm code.
+    baxter.avi file is the one used from the lab 2 assignment.
