@@ -32,6 +32,7 @@ module decode (
     output wire [4:0] rt_addr,
     output wire atomic_id,
     input  atomic_ex,
+    input  atomic_mem,
     output wire mem_sc_mask_id,
     output wire mem_sc_id,
     output wire mem_ll_id,
@@ -266,7 +267,7 @@ module decode (
 
     // 'mem_sc_mask_id' is high when a store conditional should not store
     //assign mem_sc_mask_id = 1'b0;
-    assign mem_sc_mask_id = (~atomic_ex )& stall & mem_sc_id;
+    assign mem_sc_mask_id = (~atomic_mem ) & mem_sc_id;
 
 //******************************************************************************
 // Branch resolution

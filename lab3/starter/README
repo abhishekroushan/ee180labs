@@ -1,4 +1,4 @@
-TODO: Write your lab report here. See the handout for more information.
+We have passed all the 44 tests given in the handout and also the sobel_asm test.
 
 LAB REPORT:
 1. Partner and Group Names:
@@ -20,6 +20,8 @@ LAB REPORT:
                           which essentially means that the instruction after Branch is 
                           always implemented. A 32 bit comparator is added in the Decode 
                           stage to predict branch condition early.
+    iv. Jump register datapath change for forwarding data: In the case of jr instruction, 
+	the forwarded rs_data was transferred to get the jump target beforehand.
 
     Change to the control logic to obviate hazards:
     

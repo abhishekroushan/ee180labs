@@ -1,13 +1,13 @@
 [*]
 [*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
-[*] Thu Mar  1 04:49:16 2018
+[*] Tue Mar  6 04:50:25 2018
 [*]
-[dumpfile] "/home/ketan94/ee180labs/lab3/starter/sim/tests/bgez/streamwave.vcd"
-[dumpfile_mtime] "Thu Mar  1 04:30:54 2018"
-[dumpfile_size] 32763
+[dumpfile] "/home/ketan94/ee180labs/lab3/starter/sim/tests/llsc/streamwave.vcd"
+[dumpfile_mtime] "Tue Mar  6 04:50:11 2018"
+[dumpfile_size] 40944
 [savefile] "/home/ketan94/ee180labs/lab3/starter/sim/harness/waveformat.gtkw"
 [timestart] 0
-[size] 1440 791
+[size] 1440 790
 [pos] 0 1
 *-15.000000 75200 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] userlogic_test.

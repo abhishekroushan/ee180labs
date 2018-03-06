@@ -25,11 +25,13 @@ boot:
     ori     $t1, $0, 2
     sw      $t1, 0($t0)
     ll      $t2, 0($t0)
+    #comment the below line for ll followed by sc test
     addi    $t2,$t2,1
     sc      $t2, 8($s0)
     nop #added
     nop #added       
-    #addi     $t2,$t2,1  
+    #comment the below line for ll followed by sc test
+    addi     $t2,$t2,1  
     sw      $t2, 4($s0)         # Set the test result
     sw 	    $s1, 0($s0)         # Set 'done'
 

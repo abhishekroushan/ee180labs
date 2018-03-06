@@ -109,6 +109,7 @@ module mips_cpu (
         .rt_addr            (rt_addr_id),
         .atomic_id          (mem_atomic_id),
         .atomic_ex          (mem_atomic_ex),
+        .atomic_mem         (mem_atomic_mem),
         .mem_sc_mask_id     (mem_sc_mask_id),
         .mem_sc_id          (mem_sc_id),
         .mem_ll_id          (mem_ll_id),
@@ -132,6 +133,7 @@ module mips_cpu (
     // Load-linked / Store-conditional
     wire atomic_en = en & mem_read_id;
     dffarre       atomic  (.clk(clk), .ar(rst), .r(rst_id), .en(atomic_en), .d(mem_atomic_id), .q(mem_atomic_ex));
+    dffare       atomic_mem  (.clk(clk), .r(rst), .en(en), .d(mem_atomic_ex), .q(mem_atomic_mem));
     dffarre       sc      (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(mem_sc_id), .q(mem_sc_ex));
     dffarre       ll      (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(mem_ll_id), .q(mem_ll_ex));
 
