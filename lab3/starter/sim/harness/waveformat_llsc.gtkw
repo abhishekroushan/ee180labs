@@ -1,0 +1,70 @@
+[*]
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Tue Mar  6 02:46:37 2018
+[*]
+[dumpfile] "/home/ketan94/ee180labs/lab3/starter/sim/tests/llsc/streamwave.vcd"
+[dumpfile_mtime] "Tue Mar  6 02:45:42 2018"
+[dumpfile_size] 39160
+[savefile] "/home/ketan94/ee180labs/lab3/starter/sim/harness/waveformat_llsc.gtkw"
+[timestart] 37400
+[size] 1440 790
+[pos] 0 1
+*-15.000000 158600 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] userlogic_test.
+[treeopen] userlogic_test.ul.
+[treeopen] userlogic_test.ul.cpu.
+[sst_width] 323
+[signals_width] 260
+[sst_expanded] 1
+[sst_vpaned_height] 287
+@200
+-Top
+@28
+userlogic_test.clk
+userlogic_test.rst_n
+@200
+-Input Buffer
+@22
+userlogic_test.input_buffer.din[31:0]
+userlogic_test.input_buffer.dout[31:0]
+@28
+userlogic_test.input_buffer.we
+@200
+-Output Buffer
+@22
+userlogic_test.output_buffer.din[31:0]
+userlogic_test.output_buffer.dout[31:0]
+@200
+-MIPS
+@22
+userlogic_test.ul.cpu.pc[31:0]
+userlogic_test.ul.cpu.instr[31:0]
+userlogic_test.ul.cpu.d_stage.alu_op_x[31:0]
+userlogic_test.ul.cpu.d_stage.alu_op_y[31:0]
+userlogic_test.ul.cpu.d_stage.alu_result_ex[31:0]
+@28
+userlogic_test.ul.cpu.d_stage.use_imm
+@22
+userlogic_test.ul.cpu.w_stage.rt_data[31:0]
+userlogic_test.ul.cpu.w_stage.rs_data[31:0]
+userlogic_test.ul.cpu.d_stage.op[5:0]
+userlogic_test.ul.cpu.d_stage.funct[5:0]
+userlogic_test.ul.cpu.d_stage.alu_opcode[3:0]
+userlogic_test.ul.cpu.w_stage.reg_write_data[31:0]
+@23
+userlogic_test.ul.cpu.w_stage.reg_write_addr[4:0]
+@28
+userlogic_test.ul.cpu.d_stage.mem_we
+userlogic_test.ul.cpu.d_stage.mem_read
+userlogic_test.ul.cpu.d_stage.atomic_id
+@22
+userlogic_test.ul.cpu.mem_write_data_id2ex.d[31:0]
+@28
+userlogic_test.ul.cpu.sc.q
+@22
+userlogic_test.ul.cpu.alu_result_ex2mem.d[31:0]
+@28
+userlogic_test.ul.cpu.mem_we_id2ex.q
+userlogic_test.ul.cpu.d_stage.mem_sc_mask_id
+[pattern_trace] 1
+[pattern_trace] 0

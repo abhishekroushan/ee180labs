@@ -170,7 +170,7 @@ module mips_cpu (
 
     // needed for M stage
     wire [31:0] sc_result = {{31{1'b0}},(mem_sc_ex & mem_we_ex)};
-    wire [31:0] alu_sc_result_ex = (~(mem_sc_ex & mem_we_ex))?alu_result_ex:sc_result;   // TODO: Need to conditionally inject SC value
+    wire [31:0] alu_sc_result_ex = (~(mem_sc_ex))?alu_result_ex:sc_result;   // TODO: Need to conditionally inject SC value
     dffare #(32) alu_result_ex2mem (.clk(clk), .r(rst), .en(en), .d(alu_sc_result_ex), .q(alu_result_mem));
     dffare mem_read_ex2mem (.clk(clk), .r(rst), .en(en), .d(1'b0), .q());
     dffare mem_byte_ex2mem (.clk(clk), .r(rst), .en(en), .d(mem_byte_ex), .q(mem_byte_mem));

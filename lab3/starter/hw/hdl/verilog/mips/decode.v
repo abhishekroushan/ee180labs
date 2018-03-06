@@ -123,9 +123,11 @@ module decode (
             {`ORI, `DC6}:       alu_opcode = `ALU_OR;
             {`XORI, `DC6}:       alu_opcode = `ALU_XOR;
             {`LB, `DC6}:        alu_opcode = `ALU_ADD;
+            {`LL, `DC6}:        alu_opcode = `ALU_ADD;
             {`LW, `DC6}:        alu_opcode = `ALU_ADD;
             {`LBU, `DC6}:       alu_opcode = `ALU_ADD;
             {`SB, `DC6}:        alu_opcode = `ALU_ADD;
+            {`SC, `DC6}:        alu_opcode = `ALU_ADD;
             {`SW, `DC6}:        alu_opcode = `ALU_ADD;
             {`BEQ, `DC6}:       alu_opcode = `ALU_SUBU;
             {`BNE, `DC6}:       alu_opcode = `ALU_SUBU;
@@ -248,7 +250,7 @@ module decode (
 //******************************************************************************
     assign mem_we = |{op == `SW, op == `SB, op == `SC};    // write to memory
     //assign mem_read = 1'b0;                     // use memory data for writing to a register
-    assign mem_read = |{op==`LW, op==`LB, op==`LBU};                     // use memory data for writing to a register
+    assign mem_read = |{op==`LW, op==`LB, op==`LBU, op==`LL};                     // use memory data for writing to a register
     assign mem_byte = |{op == `SB, op == `LB, op == `LBU};    // memory operations use only one byte
     assign mem_signextend = ~|{op == `LBU};     // sign extend sub-word memory reads
 
@@ -260,10 +262,11 @@ module decode (
 
     // 'atomic_id' is high when a load-linked has not been followed by a store.
     //assign atomic_id = 1'b0;
-    assign atomic_id = (~mem_sc_id)&(mem_ll_ex);
+    assign atomic_id = (~mem_we & atomic_ex)|(mem_ll_id);
 
     // 'mem_sc_mask_id' is high when a store conditional should not store
-    assign mem_sc_mask_id = 1'b0;
+    //assign mem_sc_mask_id = 1'b0;
+    assign mem_sc_mask_id = (~atomic_ex )& stall & mem_sc_id;
 
 //******************************************************************************
 // Branch resolution
