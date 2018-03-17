@@ -1,1 +1,97 @@
-TODO: Write your lab report here. See the handout for more information.
+README:
+
+Partner Names:
+    Ketan Pant
+    Abhishek Roushan
+
+Group Number: group15
+Board Number: 15
+(fpga.img under: /home/group15/lab4/)
+
+Module Changes:
+---------------
+
+  Sobel Accelerator:
+  -----------------
+  As the algorithm for Sobel detection states, we've calculate the
+  x and y component of sobel detection in convx[c] and convy[c], where c is the
+  accelerator number.
+  Since the algorithm requires computation of addition and subtraction of
+  certain components and then clip the output at 255 (unsigned max for 8 bits),
+  we store the addition terms in convxa[c] and the subtraction terms in
+  convxb[c]. We then perform convx[c]- convy[c]. The absolute value is obtained
+  by the following computation:
+  
+  abs(a-b)= (a>b)?(a-b):(b-a)
+
+  The output is then clipped to 255 using ternary operator.
+
+  
+  Sobel Control:
+  -------------
+  The following diagram can help in uunderstanding the control flow:
+
+              -----------------------------------------------------------------------
+              |                                                                     |
+              v                                                                     |
+  WAIT -> LOADING_1 -> LOADING_2 -> LOADING_3 -> PROCESSING_CALC <--                |
+                                                                   |                |
+  ------------------------------------------------------------------                |
+  |                             |                                                   |
+  v                             v                                                   |
+  PROCSSING_LOADSS            PROCSSING_LOADSS_LAST -> PROCESSING_CALC_LAST -----------------
+                                                                                    |       |
+                                                                   ERROR <-----------       |
+                                                                                            v
+                                                                                    PROCESSING_DONE
+
+  
+  Brief explanation of the states and functionality:
+  
+
+  * We reach the STATE_PROCESSING_DONE from the STATE_PROCESSING_CALC_LAST, we
+    transition to STATE_PROCESSING_DONE when the current col_strip is the
+    maximum allowable col_strip defined for the image.
+  
+  * The signal SOBEL_ROW_OP_SHIFT_ROW is chosen for row shift operations for all of the LOAD states and
+    SOBEL_ROW_OP_HOLD for the other states.
+  
+  * The next counter, row_counter_next is incremented in the following states:
+      STATE_LOADING_3
+      STATE_PROCESSING_LOADSS
+      STATE_PROCESSING_LOADSS_LAST,
+    The counter is reset in
+      STATE_PROCESSING_CALC_LAST
+  
+  * Since the last calculation in the column would trigger the increment for next
+    column strip: 
+      col_strip_next is incremented only in STATE_PROCESSING_CALC_LAST,
+      and is reset in STATE_PROCESSING_DONE.
+  
+  * Since the write to buffer is initialized after the rows are present in the
+    buffer and incremented by number of column-2 as instructed in the handout:
+      buf_write_offset initialized to col_strip_next (STATE_LOADING_3)
+      buf_write_offset += control_n_cols - 2 (STATE_PROCESSING_LOADSS and STATE_PROCESSING_LOADSS_LAST)
+  
+  * buf_write_en is enabled in STATE_PROCESSING_CALC and STATE_PROCESSING_CALC_LAST.
+  
+  * buf_read_offset is incremented by control_n_cols and is initialized to 0
+    by the WAIT stage (and reset to next_col_strip in LOADSS_LAST). There is
+    also a need to increment buf_read_offset_next by control_n_cols
+    in every state due to read delay
+    except STATE_PROCESSING_LOADSS_LAST and STATE_PROCESSING_DONE (reset to 0 prepare for the next frame)
+  
+
+ Running Design on Board:
+ -----------------------
+  We generated the fpga.img using logic synthesis and the program and run on
+  the board, the sobel detection accelerator on baxter.avi which ran successfully
+
+  The result is summarized:
+  Avg capture time/frame        : 0.072161 s
+  Avg grayscale time/frame      : 0.018748 s
+  Avg DMA time/frame            : 0.003756 s
+  Avg accelerator time/frame    : 0.006372 s
+  Avg display time/frame        : 0.002493 s
+  Frames per sec (total time)         : 9.659176
+  Frames per sec (accelerator time)   : 156.945658
